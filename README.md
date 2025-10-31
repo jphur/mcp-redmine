@@ -1,6 +1,8 @@
 # MCP Redmine
 
-MCP Redmine connects Claude Desktop (or other MCP clients) to a Redmine instance, providing tools to interact with the Redmine API. This project is based on the original work by [Rune Kaagaard](https://github.com/runekaagaard/mcp-redmine).
+MCP Redmine connects Claude Desktop (or other MCP clients) to a Redmine instance, providing tools to interact with the Redmine API. 
+
+This project is a fork of the original work by [Rune Kaagaard](https://github.com/runekaagaard/mcp-redmine). See [CHANGES.md](CHANGES.md) for modifications made in this fork.
 
 ## Installation
 
@@ -47,4 +49,6 @@ curl -X POST \
 
 ## License
 
-Mozilla Public License Version 2.0
+This project is licensed under the Mozilla Public License Version 2.0 - see the [LICENSE](LICENSE) file for details.
+
+Original project: [mcp-redmine](https://github.com/runekaagaard/mcp-redmine) by Rune Kaagaard

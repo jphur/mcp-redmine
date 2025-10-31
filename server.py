@@ -1,3 +1,7 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 import os
 import yaml
 import pathlib
@@ -23,7 +27,7 @@ if "REDMINE_REQUEST_INSTRUCTIONS" in os.environ:
         with open(path) as f:
             REDMINE_REQUEST_INSTRUCTIONS = f.read()
 
-### 🔧 Función genérica de request ###
+### 🔧 Generic request function ###
 def request_redmine(path: str, api_key: str, method: str = "get",
                     data: dict | None = None, params: dict | None = None,
                     content_type: str = "application/json",
@@ -50,45 +54,45 @@ def request_redmine(path: str, api_key: str, method: str = "get",
 def yd(obj):  # YAML helper
     return yaml.safe_dump(obj, allow_unicode=True, sort_keys=False, width=4096)
 
-### 🧠 Inicialización del servidor ###
+### 🧠 Server initialization ###
 mcp = FastMCP("Redmine MCP server")
 
-### 🧰 Herramientas ###
+### 🧰 Tools ###
 @mcp.tool()
 def redmine_request(ctx: Context, path: str, method: str = "get",
                     data: dict | None = None, params: dict | None = None) -> str:
     """
-    Realiza una petición a la API de Redmine.
-    Requiere que el cliente (LibreChat) envíe el header:
-        X-Redmine-API-Key: <tu_clave_personal>
+    Makes a request to the Redmine API.
+    Requires the client (LibreChat) to send the header:
+        X-Redmine-API-Key: <your_personal_key>
     """
     api_key = ctx.request_context.request.headers.get("X-Redmine-API-Key")
     if not api_key:
         return yd({"status_code": 0, "body": None,
-                   "error": "Falta cabecera X-Redmine-API-Key (clave personal de Redmine)"})
+                   "error": "Missing X-Redmine-API-Key header (Redmine personal key)"})
     return yd(request_redmine(path, api_key, method, data, params))
 
 @mcp.tool()
 def redmine_paths_list(ctx: Context) -> str:
-    """Devuelve la lista de endpoints disponibles en la especificación OpenAPI"""
+    """Returns the list of available endpoints in the OpenAPI specification"""
     return yd(list(SPEC["paths"].keys()))
 
 @mcp.tool()
 def redmine_paths_info(ctx: Context, path_templates: list[str]) -> str:
-    """Devuelve información detallada sobre endpoints concretos"""
+    """Returns detailed information about specific endpoints"""
     info = {p: SPEC["paths"][p] for p in path_templates if p in SPEC["paths"]}
     return yd(info)
 
 @mcp.tool()
 def redmine_upload(ctx: Context, file_path: str, description: str | None = None) -> str:
-    """Sube un archivo a Redmine"""
+    """Uploads a file to Redmine"""
     api_key = ctx.request.headers.get("X-Redmine-API-Key")
     if not api_key:
-        return yd({"status_code": 0, "body": None, "error": "Falta cabecera X-Redmine-API-Key"})
+        return yd({"status_code": 0, "body": None, "error": "Missing X-Redmine-API-Key header"})
     try:
         path = pathlib.Path(file_path).expanduser()
-        assert path.is_absolute(), f"Ruta no válida: {file_path}"
-        assert path.exists(), f"No existe el archivo: {file_path}"
+        assert path.is_absolute(), f"Invalid path: {file_path}"
+        assert path.exists(), f"File does not exist: {file_path}"
 
         params = {"filename": path.name}
         if description:
