@@ -1,0 +1,5 @@
+httpx
+fastmcp
+openapi-core
+pyyaml
+python-dotenv

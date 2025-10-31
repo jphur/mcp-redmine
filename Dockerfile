@@ -5,7 +5,6 @@ WORKDIR /app
 COPY . /app
 
 RUN pip install --upgrade pip \
-    && pip install uv \
-    && uv sync
+    && pip install -r requirements.txt
 
-CMD ["uv", "run", "--directory", "/app", "-m", "mcp_redmine.server", "main"]
+CMD ["python", "server.py"]
